@@ -1,0 +1,8 @@
+[Unit]
+Description=MP3 Audio Server
+
+[Service]
+ExecStart=/usr/local/bin/servemp3.py
+
+[Install]
+WantedBy=multi-user.target
