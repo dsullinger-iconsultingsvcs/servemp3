@@ -109,9 +109,6 @@ class Writer(threading.Thread):
 class RequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(s):
 
-        ##global_config = configparser.ConfigParser()
-        ##global_config.read('/etc/servemp3.config')
-
         encoderQueue = queue.Queue()
         writerQueue = queue.Queue()
         thread_control = {'exit_flag': 0}
