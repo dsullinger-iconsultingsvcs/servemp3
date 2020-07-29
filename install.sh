@@ -9,7 +9,7 @@ sudo cp ./servemp3.py /usr/local/bin/servemp3.py
 printf "done\n"
 
 printf "Copying encoding directory module to /usr/local/bin..."
-sudo cp -R ./encoding /usr/local/bin/encoding
+sudo cp -R ./encoding /usr/local/bin
 printf "done\n"
 
 printf "Copying servemp3.service to /etc/systemd/system... "
