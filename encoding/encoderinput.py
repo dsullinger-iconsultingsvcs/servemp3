@@ -27,7 +27,10 @@ class SoundCardReader(threading.Thread):
         self.audio = pyaudio.PyAudio()
 
         self.get_device_index()
-        print("initialized Reader on %s (%d)" % (self.DEV, self.DEV_INDEX))
+        if self.DEV_INDEX is None:
+            print("initialized Reader on default device")
+        else:
+            print("initialized Reader on %s (%d)" % (self.DEV, self.DEV_INDEX))
 
     def get_device_index(self):
         cards = self.audio.get_host_api_info_by_index(0)
