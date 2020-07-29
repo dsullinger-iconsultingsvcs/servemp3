@@ -51,7 +51,6 @@ class MP3Encoder(threading.Thread):
             itm = self.encoderQ.get()
             if itm != b'00':
                 mp3_data = self.encoder.encode(itm)
-                itm = mp3_data
                 self.writerQ.put(mp3_data)
         print("MP3 Encoder exiting...")
         self.thread_control['exit_flag'] = 1

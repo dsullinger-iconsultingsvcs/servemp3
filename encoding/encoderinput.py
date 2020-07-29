@@ -49,15 +49,15 @@ class SoundCardReader(threading.Thread):
         return return_val
         
     def run(self):
-        inStream = self.audio.open(format=self.FORMAT, channels=self.CHANNELS,
+        in_stream = self.audio.open(format=self.FORMAT, channels=self.CHANNELS,
                    rate=self.RATE, input=True, frames_per_buffer=self.CHUNK,
                    input_device_index=self.DEV_INDEX)
         print("input device opened")
         sys.stdout.flush()
         while not self.thread_control['exit_flag']:
             try: 
-                inData = inStream.read(self.CHUNK)
-                self.encoderQ.put(inData)
+                in_data = in_stream.read(self.CHUNK)
+                self.encoderQ.put(in_data)
             except:
                 print("Reader Exception: ", end="")
                 print(sys.exc_info()[1])

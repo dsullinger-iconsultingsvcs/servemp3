@@ -36,14 +36,14 @@ class HTTPDRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(s):
 
-        encoderQueue = queue.Queue()
-        writerQueue = queue.Queue()
+        encoder_queue = queue.Queue()
+        writer_queue = queue.Queue()
         thread_control = {'exit_flag': 0}
         global_config = s.server.global_config
 
-        readerThread = s.server.ReaderClass(global_config, encoderQueue, thread_control)
-        encoderThread = s.server.EncoderClass(global_config, encoderQueue, writerQueue, thread_control)
-        writerThread = SocketWriter(writerQueue, s.request, thread_control)
+        reader_thread = s.server.ReaderClass(global_config, encoder_queue, thread_control)
+        encoder_thread = s.server.EncoderClass(global_config, encoder_queue, writer_queue, thread_control)
+        writer_thread = SocketWriter(writer_queue, s.request, thread_control)
 
         content_type_map = {'mp3': 'audio/mpeg',
                             'passthrough': 'audio/pcm'
@@ -57,14 +57,14 @@ class HTTPDRequestHandler(http.server.BaseHTTPRequestHandler):
             s.send_response(500, "Unknown encoding type %s" % encoding_type)
             return
 
-        writerThread.start()
-        encoderThread.start()
-        readerThread.start()
+        writer_thread.start()
+        encoder_thread.start()
+        reader_thread.start()
         sys.stdout.flush()
 
-        writerThread.join()
-        encoderThread.join()
-        readerThread.join()
+        writer_thread.join()
+        encoder_thread.join()
+        reader_thread.join()
 
         print("All threads closed")
         sys.stdout.flush()
