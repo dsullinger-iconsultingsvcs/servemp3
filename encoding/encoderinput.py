@@ -5,6 +5,7 @@ import threading
 import queue
 import pyaudio
 import configparser
+import time
 
 class SoundCardReader(threading.Thread):
     def __init__(self, global_config, encoderQ, thread_control):
@@ -18,12 +19,14 @@ class SoundCardReader(threading.Thread):
         self.RATE = 44100
         self.CHUNK = 512
         self.DEV = 'default'
+        self.TIMELIMIT = 0
         if 'input' in global_config:
             config = global_config['input']
             self.CHANNELS = config.getint('Channels', self.CHANNELS)
             self.RATE = config.getint('Rate', self.RATE)
             self.CHUNK = config.getint('ChunkSize', self.CHUNK)
             self.DEV = config.get('Device', self.DEV)
+            self.TIMELIMIT = config.getint('Timelimit', self.TIMELIMIT)
         self.audio = pyaudio.PyAudio()
 
         self.get_device_index()
@@ -54,10 +57,18 @@ class SoundCardReader(threading.Thread):
                    input_device_index=self.DEV_INDEX)
         print("input device opened")
         sys.stdout.flush()
+        sample_limit = 0
+        sample_count = 0
+        if self.TIMELIMIT:
+            sample_limit = (self.RATE * self.TIMELIMIT) / self.CHUNK
+        sys.stdout.flush()
         while not self.thread_control['exit_flag']:
             try: 
                 in_data = in_stream.read(self.CHUNK)
                 self.encoderQ.put(in_data)
+                sample_count = sample_count + 1
+                if sample_limit and sample_count > sample_limit:
+                    self.thread_control['exit_flag'] = 1
             except:
                 print("Reader Exception: ", end="")
                 print(sys.exc_info()[1])

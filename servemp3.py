@@ -45,7 +45,7 @@ if __name__ == '__main__':
     if output_type == 'httpd':
         port = 8080
         port = output_config.getint('port', port)
-        with encoding.encoderoutput.EncoderHTTPServer(("", port), global_config, ReaderClass, EncoderClass) as httpd:
+        with encoding.encoderoutput.HTTPServerEncoder(("", port), global_config, ReaderClass, EncoderClass) as httpd:
             try:
                 print("Listening on port %d" % port)
                 sys.stdout.flush()
@@ -53,3 +53,12 @@ if __name__ == '__main__':
             except KeyboardInterrupt:
                 pass
             httpd.server_close()
+
+    if output_type == 'file':
+        file_output = encoding.encoderoutput.FileOutputEncoder(global_config, 
+                      ReaderClass, EncoderClass)
+        try:
+            sys.stdout.flush()
+            file_output.process_stream()
+        except KeyboardInterrupt:
+            pass
