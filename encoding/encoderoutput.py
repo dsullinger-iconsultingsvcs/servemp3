@@ -16,8 +16,15 @@ class SocketWriter(threading.Thread):
         print("initialized Socket Writer")
 
     def run(self):
+        item_count = 0
         while not self.thread_control['exit_flag']:
             itm = self.writerQ.get()
+            item_count = item_count + 1
+            if item_count > 100:
+                item_count = 0
+                queue_size = self.writerQ.qsize()
+                print("  Queue size is %d")
+                sys.stdout.flush()
             if itm != b'00':
                 try:
                     self.sock.send(itm)
