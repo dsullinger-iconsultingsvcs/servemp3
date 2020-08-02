@@ -23,7 +23,8 @@ class SocketWriter(threading.Thread):
             if item_count > 100:
                 item_count = 0
                 queue_size = self.writerQ.qsize()
-                print("  Queue size is %d")
+                if queue_size > 1:
+                    print("!!!Queue size is %d" % queue_size)
                 sys.stdout.flush()
             if itm != b'00':
                 try:
